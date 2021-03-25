@@ -18,18 +18,8 @@ version = 0.3
 
 
 def ensure_redundancy(path_redundant, path_notes):
-    if path.isfile(
-        path_redundant
-    ):  # keep a note archive file in case something happens to main notes file
-        with open(path_redundant, "r") as f:
-            redundant_lines = f.readlines()
-    else:
-        redundant_lines = []
-    if path.isfile(path_notes):
-        with open(path_notes, "r") as f:
-            these_lines = f.readlines()
-    else:
-        these_lines = []
+    redundant_lines = get_lines(path_redundant)
+    these_lines = get_lines(path_notes)
     for this_line in these_lines:
         for redundant_line in redundant_lines:
             if this_line.split("--")[0] in redundant_line:
@@ -38,6 +28,15 @@ def ensure_redundancy(path_redundant, path_notes):
             redundant_lines.append(this_line)
     with open(path_redundant, "w") as f:
         f.writelines(redundant_lines)
+
+
+def get_lines(p):
+    if path.isfile(p):
+        with open(p, "r") as f:
+            lines = f.readlines()
+    else:
+        lines = []
+    return lines
 
 
 def get_attr_by_flag(args, d, flag_key):
@@ -124,43 +123,10 @@ def main():
             return
 
         if topics is None:
-            output_limiter = 5
-            for i, line in enumerate(lines):
-                if i != 0 and i % output_limiter == 0:
-                    user_input = input(
-                        "\nEnter to continue (e to exit loop, b to end run)\n"
-                    )
-                    if user_input == "e":
-                        output_limiter = 1000
-                    if user_input == "b":
-                        break
-                process_line(line, d)
+            show_non_specific_lines(lines, d)
             return
         for topic in topics:
-            print(topic)
-            if topic in ["ALL", "SHOW", "HELP", "TOPICS"]:
-                topics.remove(topic)
-                ticker_set = set()
-                for i, line in enumerate(lines):
-                    mat = match(r"\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}--(.*?):", line)
-                    group = mat.group(1)
-                    if len(group) > 0:
-                        ticker_set.add(group.upper())
-                print(
-                    "\n  Current Topics in {}".format(default_file_path)
-                    + colorama.Fore.MAGENTA
-                    + ":\n\t{}".format("\n\t".join(list(ticker_set)))
-                )
-        # if topics[0] in ['ALL', 'SHOW', 'HELP', 'TOPICS']:
-        #     ticker_set = set()
-        #     for i, line in enumerate(lines):
-        #         mat = match(r'\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}--(.*?):', line)
-        #         group = mat.group(1)
-        #         if len(group) > 0:
-        #             ticker_set.add(group.upper())
-        #     print('\n  Current Topics in {}'.format(default_file_path) + colorama.Fore.MAGENTA   + ':\n\t{}'.format("\n\t".join(list(ticker_set))))
-        # return
-
+            show_specific_lines(topic, topics, lines, default_file_path)
         for i, line in enumerate(lines):
             if sum([1 for t in topics if t in line.split("::")[0]]) > 0:
                 process_line(line, d)
@@ -215,6 +181,35 @@ def main():
         else:
             f.write(this_note + "\n" + string)
     process_line(this_note, d)
+
+
+def show_specific_lines(topic, topics, lines, default_file_path):
+    print(topic)
+    if topic in ["ALL", "SHOW", "HELP", "TOPICS"]:
+        topics.remove(topic)
+        ticker_set = set()
+        for i, line in enumerate(lines):
+            mat = match(r"\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}--(.*?):", line)
+            group = mat.group(1)
+            if len(group) > 0:
+                ticker_set.add(group.upper())
+        print(
+            "\n  Current Topics in {}".format(default_file_path)
+            + colorama.Fore.MAGENTA
+            + ":\n\t{}".format("\n\t".join(list(ticker_set)))
+        )
+
+
+def show_non_specific_lines(lines, d):
+    output_limiter = 5
+    for i, line in enumerate(lines):
+        if i != 0 and i % output_limiter == 0:
+            user_input = input("\nEnter to continue (e to exit loop, b to end run)\n")
+            if user_input == "e":
+                output_limiter = 1000
+            if user_input == "b":
+                break
+        process_line(line, d)
 
 
 def process_line(line, d):
