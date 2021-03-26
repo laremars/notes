@@ -292,6 +292,7 @@ def process_line(line, d):
                     .replace(">>>", colorama.Fore.GREEN + ">>> ")
                     .replace("ggg", colorama.Fore.GREEN)
                     .replace("yyy", colorama.Fore.YELLOW)
+                    .replace("<h>", colorama.Fore.YELLOW)
                     .replace("rrr", colorama.Fore.RED)
                     .replace("ccc", colorama.Fore.CYAN)
                     .replace("bbb", colorama.Fore.BLUE)
@@ -301,6 +302,7 @@ def process_line(line, d):
                     )
                     .replace("hhh", colorama.Back.YELLOW + colorama.Fore.MAGENTA)
                     .replace("<<<", colorama.Back.RESET + colorama.Fore.WHITE)
+                    .replace("</h>", colorama.Back.RESET + colorama.Fore.WHITE)
                     .replace("<RESET>", colorama.Back.RESET + colorama.Fore.WHITE)
                 )
 
