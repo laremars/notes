@@ -268,34 +268,6 @@ def main():
 def show_all_topics(
     topics: List[str], lines: List[str], default_file_path: str
 ) -> List[str]:
-    """
-    `show_all_topics` [summary]
-    
-    Parameters
-    ----------
-    `topics` : List[str]
-            [description]
-    `lines` : List[str]
-            [description]
-    `default_file_path` : str
-            [description]
-    
-    
-    Returns
-    -------
-    List[str]
-        [description]
-    
-    
-    
-    Example
-    -------
-        `show_all_topics` usage:
-    ```python
-        >>> show_all_topics()
-        [output]
-    ```
-    """
 
     topics.remove("ALL")
     ticker_set = set()
