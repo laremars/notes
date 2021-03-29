@@ -270,7 +270,7 @@ def show_all_topics(
 ) -> List[str]:
     """
     `show_all_topics` [summary]
-    
+
     Parameters
     ----------
     `topics` : List[str]
@@ -279,15 +279,14 @@ def show_all_topics(
             [description]
     `default_file_path` : str
             [description]
-    
-    
+
     Returns
     -------
     List[str]
         [description]
-    
-    
-    
+
+
+
     Example
     -------
         `show_all_topics` usage:
